@@ -28,7 +28,7 @@ class MakeView(LoginRequiredMixin, View):
         ml = Make.objects.all()
         context = {"make_list": ml,}
 
-        return(request, self.template_name, context)
+        return render(request, self.template_name, context)
     
 class MakeCreateView(LoginRequiredMixin, View):
     template = 'autos/make_form.html'
