@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -22,17 +22,78 @@ class MainView(LoginRequiredMixin, View):
         return render(request, self.template_name, context )
     
 class MakeView(LoginRequiredMixin, View):
-    pass
+    template_name = 'autos/make_list.html'
+
+    def get(self, request):
+        ml = Make.objects.all()
+        context = {"make_list": ml,}
+
+        return(request, self.template_name, context)
+    
 class MakeCreateView(LoginRequiredMixin, View):
-    pass
-class MakeUpdateView(UpdateView):
-    pass
-class MakeDeleteView(DeleteView):
-    pass
+    template = 'autos/make_form.html'
+    succesful_url = reverse_lazy('autos:all')
+
+    def get(self, request):
+        form = MakeForm()
+        context = {'form': form}
+        return render(request, self.template, context)
+
+    def post(self, request):
+        form = MakeForm(request.POST)
+        if not form.is_valid():
+            context = {'form': form}
+            return render(request, self.template, context)
+
+        make = form.save()
+        return redirect(self.succesful_url)
+    
+class MakeUpdateView(LoginRequiredMixin, View):
+    model = Make
+    success_url = reverse_lazy('autos:all')
+    template = 'autos/make_form.html'
+
+    def get(self, request, pk):
+        make = get_object_or_404(self.model, pk=pk)
+        form = MakeForm(instance=make)
+        context = {'form': form}
+        return render(request, self.template, context)
+
+    def post(self, request, pk):
+        make = get_object_or_404(self.model, pk=pk)
+        form = MakeForm(request.POST, instance=make)
+        if not form.is_valid():
+            context = {'form':form}
+            return render(request, self.template, context)
+        form.save()
+        return redirect(self.success_url)
+    
+class MakeDeleteView(LoginRequiredMixin, View):
+    model = Make
+    success_url = reverse_lazy('autos:all')
+    template = 'autos/make_confirm_delete.html'
+
+    def get(self, request, pk):
+        make = get_object_or_404(self.model, pk=pk)
+        context = {'make':make}
+        return render(request, self.template, context)
+
+    def post(self, request, pk):
+        make = get_object_or_404(self.model, pk=pk)
+        make.delete()
+        return redirect(self.success_url)
+    
 class AutoCreate(LoginRequiredMixin, CreateView):
     model = Auto    
-    pass
-class AutoUpdateView(UpdateView):
-    pass
-class AutolDeleteView(DeleteView):
-    pass
+    fields = '__all__'
+    success_url = reverse_lazy('autos:all')
+
+class AutoUpdateView(LoginRequiredMixin, UpdateView):
+    model = Auto
+    fields = '__all__'
+    success_url = reverse_lazy('autos:all')
+
+class AutolDeleteView(LoginRequiredMixin, DeleteView):
+    model = Auto
+    fields = '__all__'
+    success_url = reverse_lazy('autos:all')
