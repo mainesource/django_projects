@@ -4,25 +4,35 @@ from django.views import View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
-from autos.model import Auto, Make
-from autos.forms import MakeForm
+from .models import Auto, Make
+from .forms import MakeForm
 
 # Create your views here.
 class MainView(LoginRequiredMixin, View):
+    template_name = 'autos/auto_list.html'
+
+    def get(self, request):
+        mc = Make.objects.count()
+        al = Auto.objects.all()
+
+        context = {
+            "make_count": mc,
+            "auto_list": al
+            }
+        return render(request, self.template_name, context )
+    
+class MakeView(LoginRequiredMixin, View):
     pass
-class MakeListView(ListView):
-    pass
-class MakeDetailView(DetailView):
+class MakeCreateView(LoginRequiredMixin, View):
     pass
 class MakeUpdateView(UpdateView):
     pass
 class MakeDeleteView(DeleteView):
     pass
-class ModelListView(ListView):
+class AutoCreate(LoginRequiredMixin, CreateView):
+    model = Auto    
     pass
-class ModelDetailView(DetailView):
+class AutoUpdateView(UpdateView):
     pass
-class ModelUpdateView(UpdateView):
-    pass
-class ModelDeleteView(DeleteView):
+class AutolDeleteView(DeleteView):
     pass
