@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
         # My Apps
+    "cats.apps.CatsConfig",
     "autos.apps.AutosConfig",
     "hello.apps.HelloConfig",
     "home.apps.HomeConfig",

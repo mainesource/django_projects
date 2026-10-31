@@ -27,4 +27,5 @@ urlpatterns = [
     path("solo1/", include("solo1.urls")),
     path("hello/", include("hello.urls")),
     path("autos/", include("autos.urls")),
+    path("cats/", include("cats.urls")),
 ]

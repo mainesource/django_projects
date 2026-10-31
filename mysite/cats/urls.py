@@ -2,6 +2,7 @@ from django.urls import path
 from .views import *
 
 app_name = 'cats'
+
 urlpatterns = [
     path('', CatListView.as_view(), name='all_cats'),
     path('cat/create/', CatCreateView.as_view(), name='create_cat'),
